@@ -10,12 +10,13 @@ let myChart = null;
 let myChartRef = $ref();
 const props = defineProps({
   colors: [],
-  data: []
+  data: [],
+  name:[]
 })
 
 const option = {
   yAxis: {
-    data: props.data,
+    data: props.name,
     axisLabel: {
       inside: true,
       color: '#fff',
@@ -29,7 +30,7 @@ const option = {
   series: [{
     type: 'bar',
     stack: '业务',
-    data: [5, 10, 15, 20, 25, 30],
+    data: props.data,
     label: {
       show: true,
       position: 'right',

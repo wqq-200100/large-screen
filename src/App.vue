@@ -1,22 +1,30 @@
 <template>
   <div class="container">
     <div class="main">
-      <div class="main-title">
+      <div class="main-title" >
         <div demo-bg>
-          <dv-border-box9>
-            <div class="dv-bg" dv-bg>
-              <div class="title-text">哈哈哈哈哈</div>
+          <div class="dv-bg" dv-bg>
+            <dv-decoration-8 style="width:300px;height:70px;" />
+            <dv-decoration-10 style="width:20%;height:110px;" />
+            <div class="title">
               <div class="title-text center">政务云资源总览</div>
-              <div class="title-text">巴卡马卡把卡</div>
-            </div>
-          </dv-border-box9>
+              <dv-decoration-3 style="width:250px;height:30px;" />
+            </div>0
+            <dv-decoration-10 style="width:20%;height:120px;" />
+            <dv-decoration-8 :reverse="true" style="width:300px;height:70px;" />
+          </div>
+
         </div>
       </div>
       <div class="main-table">
-        <div v-for="item in tablesText" small-bg>
-          <dv-decoration-11 style="width:200px;height:60px;color: white">
-            <div bg="~ dark/0" color-green font-600>
-              <div>{{ item }}</div>
+        <div v-for="(item,index) in tablesText" small-bg>
+          <dv-decoration-11 style="width:170px;height:60px;color: white">
+            <div bg="~ dark/0" color-green font-600 class="bg-box">
+              <img :src="`src/assets/image/role${index+1}.png`" alt="">
+              <div class="bg-left">
+                <div>{{ item.Hardware }}</div>
+                <div class="num">{{ item.count }}</div>
+              </div>
             </div>
           </dv-decoration-11>
         </div>
@@ -27,7 +35,9 @@
         <div class="main-label">
           <div class="label-title">标题吃喜羊羊哈哈</div>
           <div class="main-label-table">
-            <div v-for="item in mainlable" class="table-item">{{ item }}</div>
+            <div v-for="(item,index) in mailable" class="table-item" @click="onchange(index)"
+                 :class="{active:indexKey === index}">{{ item }}
+            </div>
           </div>
           <el-pagination
               :total="50"
@@ -37,12 +47,25 @@
               small
           />
         </div>
-        <div class="main-statistics"></div>
+        <!--中间-->
+        <div class="main-statistics">
+          <div class="ChartLabel">
+            <div class="chartName">资源管理中心</div>
+            <myCircle/>
+            <!--            <div class="beeline-box">
+                          <div class="cake cake-1">
+                            <div class="beeline"></div>
+                          </div>
+                        </div>-->
+          </div>
+        </div>
         <!--右边-->
         <div class="main-label">
           <div class="label-title">标题吃喜羊羊哈哈</div>
           <div class="main-label-table">
-            <div v-for="item in mainlable" class="table-item">{{ item }}</div>
+            <div v-for="(item,index) in mailable2" class="table-item" @click="changeClick(index)"
+                 :class="{active:currentIndex === index}">{{ item }}
+            </div>
           </div>
           <el-pagination
               :total="50"
@@ -58,35 +81,46 @@
       <div class="zhu-zhuang-tu">
         <div class="label-title">表格</div>
         <div class="first-table">
-          <el-table id="my-table" :data="tableData" style='width:100%' >
+          <el-table id="my-table" :data="tableData">
             <el-table-column prop="date" align="center" label="date" width="80"/>
             <el-table-column label="cpu" align="center">
-              <el-table-column prop="cpu1" align="center" label="" width="43"/>
-              <el-table-column prop="cpu2" align="center" label="" width="43"/>
+              <el-table-column prop="cpu1" align="center" width="43"/>
+              <el-table-column prop="cpu2" align="center" width="43"/>
             </el-table-column>
             <el-table-column label="gpu" align="center">
-              <el-table-column prop="gpu" align="center" label="" width="43"/>
-              <el-table-column prop="gpu" align="center" label="" width="43"/>
+              <el-table-column prop="gpu1" align="center" width="43"/>
+              <el-table-column prop="gpu2" align="center" width="43"/>
             </el-table-column>
             <el-table-column label="qbb" align="center">
-              <el-table-column prop="gpu" align="center" label="" width="43"/>
-              <el-table-column prop="gpu" align="center" label="" width="43"/>
+              <el-table-column prop="qb1" align="center" width="43"/>
+              <el-table-column prop="qb2" align="center" width="43"/>
             </el-table-column>
           </el-table>
         </div>
       </div>
       <div class="zhu-zhuang-tu" v-for="item in footTitle">
         <div class="label-title">{{ item.title }}</div>
-        <myTable :colors="item.colors" :data="item.data"/>
+        <myTable :colors="item.colors" :data="item.data" :name="item.name"/>
       </div>
     </div>
   </div>
 </template>
 <script setup>
-import {reactive} from "vue";
-import myTable from "./components/tabel.vue";
+import myTable from "./components/myTabel.vue";
+import myCircle from "./components/myCircle.vue";
+import {Random} from "mockjs";
 
-const tablesText = reactive(['CJIA', 'ISQS', 'JSIQ', 'DXG', 'UIHXDU'])
+const tablesText = $ref([
+  {Hardware: '上云热门数', count: '32000+'},
+  {Hardware: '上云系统数', count: '2300+'},
+  {Hardware: '上云cpu栈', count: '23100+'},
+  {Hardware: '内存', count: '59030GB'},
+  {Hardware: '存储', count: '10800TB'}
+])
+
+const mailable = Array(14).fill(1).map(i => Random.city() + '委办网')
+const mailable2 = Array(14).fill(1).map(i => Random.city() + '委办网')
+
 const footTitle = $ref([
   {
     title: 'CPU',
@@ -95,7 +129,8 @@ const footTitle = $ref([
       '#664f97',
       '#584572'
     ],
-    data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"]
+    name: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"],
+    data: [198, 39, 55, 121, 55, 155].sort((a,b) => a-b)
   }, {
     title: 'CPU2',
     colors: [
@@ -103,7 +138,8 @@ const footTitle = $ref([
       '#9a7b81',
       '#936886'
     ],
-    data: ["吃饭", "是阿三", "和地区的", "裤i欧家栋i哦子", "嗲u好地方", "袜子"]
+    name: ["吃饭", "是阿三", "和地区的", "裤i欧家栋i哦子", "嗲u好地方", "袜子"],
+    data: [100, 83, 55, 121, 95, 222].sort((a,b) => a-b)
   }, {
     title: 'CPU3',
     colors: [
@@ -111,51 +147,64 @@ const footTitle = $ref([
       '#f3796b',
       '#da4d61'
     ],
-    data: ["123", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "www"]
+    name: ["高跟鞋", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "www"],
+    data: [100, 33, 55, 121, 59, 123].sort((a,b) => a-b)
   },
 ])
-const tableData = [
+const tableData = $ref([
   {
     date: '2022/10/23',
     cpu1: 222,
     cpu2: 333,
-    gpu: 200,
-    qb: 300,
+    gpu1: 9090,
+    gpu2: 'ax',
+    qb1: 300,
+    qb2: 'ii',
   }, {
     date: '2022/10/24',
     cpu1: 44,
-    cpu2: 55,
-    gpu: 200,
-    qb: 300,
+    cpu2: 77,
+    gpu1: 1111,
+    gpu2: 'ijd',
+    qb1: 229,
+    qb2: 'sd',
   }, {
     date: '2022/10/25',
     cpu1: 100,
-    cpu2: 100,
-    gpu: 200,
-    qb: 300,
+    cpu2: 'kdx',
+    gpu1: 999,
+    gpu2: 90,
+    qb1: 23,
+    qb2: 399,
   }, {
     date: '2022/10/26',
-    cpu1: 100,
-    cpu2: 100,
-    gpu: 200,
-    qb: 300,
+    cpu1: '完全',
+    cpu2: '胃口的',
+    gpu1: '看完',
+    gpu2: '几位',
+    qb1: '等我',
+    qb2: '开始',
   },
-]
+])
+let currentIndex = $ref('')
+let indexKey = $ref('')
 
-const mainlable = $ref(['数据1', '数据1', '数据1', '数据1', '数据1', '数据1', '数据1', '数据1', '数据1', '数据1', '数据1', '数据1'])
+//右边
+function changeClick(index) {
+  currentIndex = index
+}
+// 左边
+function onchange(index) {
+  indexKey = index
+
+}
+
 </script>
 
 <style lang="scss" scoped>
-//::v-deep(#my-table tr:nth-child(2) > th:nth-child(2n)) {
-//  border-left: none;
-//}
 ::v-deep(#my-table .is-group tr:nth-child(2) ) {
   display: none;
 }
-
-//::v-deep(#my-table tr:nth-child(2) > th:nth-child(2n -1)) {
-//  border-right: none !important;
-//}
 
 .container {
   width: 100vw;
@@ -165,15 +214,17 @@ const mainlable = $ref(['数据1', '数据1', '数据1', '数据1', '数据1', '
   background: rgb(10, 10, 30);
 
   .main {
-    flex: 1;
+    flex: 3;
     border: 2px solid rgb(6, 158, 224);
+
 
     .dv-bg {
       width: 100%;
       height: 100px;
       display: flex;
-      justify-content: center;
-      align-items: center;
+      justify-content: space-between;
+      align-items: stretch;
+      //flex-direction: column;
 
       .title-text {
         padding: 0 22px;
@@ -182,7 +233,7 @@ const mainlable = $ref(['数据1', '数据1', '数据1', '数据1', '数据1', '
       }
 
       .center {
-        color: white;
+        color: #20a7b3;
         font-size: 33px;
       }
     }
@@ -190,7 +241,24 @@ const mainlable = $ref(['数据1', '数据1', '数据1', '数据1', '数据1', '
     .main-table {
       display: flex;
       justify-content: space-around;
-      margin-top: 10px;
+      margin-top: 27px;
+
+      .bg-box {
+        display: flex;
+        align-items: center;
+        padding-left: 35px;
+        font-size: 13px;
+
+        img {
+          position: absolute;
+          left: 33px;
+          width: 27px;
+        }
+
+        .num{
+          color: #f6d944;
+        }
+      }
     }
 
     .main-content {
@@ -201,8 +269,7 @@ const mainlable = $ref(['数据1', '数据1', '数据1', '数据1', '数据1', '
         margin-top: 20px;
 
         ::v-deep(.el-pagination) {
-          margin-left: 19px;
-          margin-bottom: 9px;
+          margin: 60px 20px 9px;
 
           button, li {
             color: #fff;
@@ -217,7 +284,7 @@ const mainlable = $ref(['数据1', '数据1', '数据1', '数据1', '数据1', '
         .main-label-table {
           width: 200px;
           height: 280px;
-          margin: 10px 30px 0;
+          margin: 29px 30px 0;
           display: flex;
           align-content: flex-start;
           flex-flow: wrap;
@@ -233,16 +300,69 @@ const mainlable = $ref(['数据1', '数据1', '数据1', '数据1', '数据1', '
             line-height: 33px;
             text-align: center;
             font-size: 12px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+          }
+
+          .active {
+            background: rgb(28, 131, 145)
           }
         }
       }
 
       .main-statistics {
-        width: 300px;
-        height: 300px;
-        border: 2px solid rgb(6, 158, 224);
+        width: 330px;
+        height: 330px;
+        border: 10px solid rgb(13, 38, 74);
         border-radius: 50%;
-        margin-top: 33px;
+        margin-top: 60px;
+        position: relative;
+
+        .ChartLabel {
+          position: absolute;
+          height: 100%;
+          width: 100%;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          .chartName {
+            color: #dddddd;
+            margin-top: 10px;
+            position: absolute;
+            font-size: 22px;
+            background-image: -webkit-linear-gradient(left, #F1ACACFF, rgba(6, 198, 206, 0.56) 10%, #6c6ce8 20%, #579ae3 30%, #6C6CE8FF 40%, #00FFFF 50%, #CCCCFF 60%, #2580E5FF 70%, #D0F66FFF 80%, #66FFFF 90%, #579AE3FF 100%);
+            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text;
+            -webkit-background-size: 200% 100%;
+            -webkit-animation: masked-animation 4s linear infinite;
+          }
+
+          @keyframes masked-animation {
+            0% {
+              background-position: 0 0;
+            }
+            100% {
+              background-position: -100% 0;
+            }
+          }
+
+          .beeline-box {
+            width: 350px;
+            height: 350px;
+            background: palegreen;
+            position: absolute;
+            top: 0;
+
+            .cake {
+              border: 1px solid orange;
+            }
+          }
+        }
       }
     }
   }
@@ -260,6 +380,12 @@ const mainlable = $ref(['数据1', '数据1', '数据1', '数据1', '数据1', '
       width: 90%;
       padding-left: 20px;
       margin-top: 8px;
+
+      #my-table {
+        width: 100%;
+        height: 100%;
+        margin-top: 19px
+      }
 
       ::v-deep(.el-table .cell) {
         padding: 0 2px;
